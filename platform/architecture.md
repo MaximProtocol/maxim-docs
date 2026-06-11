@@ -161,3 +161,85 @@ Agent wallet keypairs are stored encrypted in Maxim Protocol's key management se
 The private key is decrypted in memory only at the point of signing a Solana transaction. It is never written to disk unencrypted and never transmitted outside the signing process.
 
 Enterprise accounts can bring their own KMS key (BYOK). See [Security](security.md) for details.
+
+---
+
+## REST API reference
+
+All endpoints are under `https://api.maximprotocol.com/v1`. Every request requires `Authorization: Bearer <key>`.
+
+### Wallets
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/v1/wallets` | Create an agent wallet |
+| `GET` | `/v1/wallets/{agentId}` | Get wallet balance and address |
+| `POST` | `/v1/wallets/{agentId}/fund` | Fund a wallet from your account's configured funding source |
+| `POST` | `/v1/wallets/{agentId}/withdraw` | Withdraw USDC to an external Solana address |
+| `POST` | `/v1/wallets/import` | Import an existing Ed25519 keypair |
+
+### Payments
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/v1/pay` | Make a payment — protocol auto-detected |
+| `POST` | `/v1/agents/invoke` | Invoke a sub-agent with an optional budget cap |
+
+### Policies
+
+| Method | Path | Description |
+|---|---|---|
+| `PUT` | `/v1/policies/{agentId}` | Set or replace spend policies |
+| `GET` | `/v1/policies/{agentId}` | Get current spend policies and usage counters |
+
+### Transactions
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/v1/transactions` | List transactions; filter by `agentId`, `protocol`, `domain`, `since`, `status` |
+| `GET` | `/v1/transactions/{txHash}` | Get a single transaction |
+| `GET` | `/v1/transactions/{txHash}/chain` | List all transactions in a multi-agent chain |
+| `GET` | `/v1/transactions/{txHash}/tree` | Get the full payment tree with cost rollup |
+
+### Sessions
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/v1/sessions` | List active MPP sessions for an agent |
+| `DELETE` | `/v1/sessions` | Clear sessions; filter by `agentId` and `domain` |
+
+### Metrics
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/v1/agents/{agentId}/metrics` | Aggregated spend, tx count, and protocol split; supports `window` and `resolution` |
+
+### Keys and alerts
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/v1/keys` | Create a per-agent API key |
+| `DELETE` | `/v1/keys/{keyId}` | Revoke an API key |
+| `POST` | `/v1/alerts` | Create a budget, spend-rate, or policy-violation alert |
+
+---
+
+## Error responses
+
+All API errors return JSON with a machine-readable `error` field:
+
+```json
+{
+  "error": "policy_violation",
+  "reason": "per_call_limit_exceeded",
+  "detail": "Requested 2.50 USDC, limit is 1.00 USDC"
+}
+```
+
+| HTTP status | Meaning |
+|---|---|
+| `401` | API key missing or invalid |
+| `402` | Payment rejected by policy (see `error` body) |
+| `403` | Per-agent key used for an account-level operation |
+| `429` | Account-level rate limit exceeded |
+| `500` | Internal error |
