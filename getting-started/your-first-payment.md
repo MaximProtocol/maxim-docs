@@ -4,6 +4,15 @@ This guide walks through the full lifecycle of making an agent payment with Maxi
 
 ---
 
+## Prerequisites
+
+- A Maxim Protocol account at [app.maximprotocol.com](https://app.maximprotocol.com)
+- An API key from **Settings → API Keys**, exported as `MAXIM_API_KEY`
+
+If you haven't done this yet, the [Quickstart](quickstart.md) covers it in under five minutes.
+
+---
+
 ## What we are building
 
 An agent that:
