@@ -21,11 +21,13 @@
 * [Multi-Agent Payments](features/multi-agent-payments.md)
 * [Observability](features/observability.md)
 
-## CLI
+## Guides
 
-* CLI Reference (coming soon)
+* [TypeScript Examples](guides/typescript.md)
 
 ## Platform
 
-* [Architecture](platform/architecture.md)
+* [Architecture & API Reference](platform/architecture.md)
+* [Webhooks](platform/webhooks.md)
+* [Error Reference](platform/errors.md)
 * [Security](platform/security.md)
